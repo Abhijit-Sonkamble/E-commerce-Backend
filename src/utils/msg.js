@@ -1,0 +1,95 @@
+module.exports.MSG = {
+
+    // Auth Messages
+    USER_REGISTER_SUCCESS: "User registered successfully",
+    USER_LOGIN_SUCCESS: "User login successful",
+    USER_LOGOUT_SUCCESS: "User logout successful",
+    INVALID_CREDENTIALS: "Invalid email or password",
+    TOKEN_REQUIRED: "Authentication token required",
+    TOKEN_INVALID: "Invalid or expired token",
+    UNAUTHORIZED: "Unauthorized access",
+    ACCESS_DENIED: "Access denied",
+
+    // Admin Messages
+    ADMIN_LOGIN_SUCCESS: "Admin login successful",
+    ADMIN_LOGIN_FAILED: "Admin login failed",
+    ADMIN_REGISTRATION_SUCCESS: "Admin registration success",
+    ADMIN_REGISTRATION_FAILED: "Admin registration failed",
+    ADMIN_CREATED_SUCCESS: "Admin created successfully",
+    ADMIN_UPDATED_SUCCESS: "Admin updated successfully",
+    ADMIN_DELETED_SUCCESS: "Admin deleted successfully",
+    ADMIN_NOT_FOUND: "Admin not found",
+    ADMIN_ALREADY_EXISTS: "Admin already exists",
+    ADMIN_ONLY_ACCESS: "Only admin can access this resource",
+    ADMIN_FETCH_SUCCESS: "Admins fetched successfully",
+
+    // User Messages
+    USER_CREATED_SUCCESS: "User created successfully",
+    USER_NOT_FOUND: "User not found",
+    USER_ALREADY_EXISTS: "User already exists",
+    USER_FETCH_SUCCESS: "Users fetched successfully",
+    USER_DELETE_SUCCESS: "User deleted successfully",
+    USER_UPDATE_SUCCESS: "User updated successfully",
+    USER_PROFILE_FETCH_SUCCESS: "User profile fetched successfully",
+    USER_PASSWORD_UPDATED: "User password updated successfully",
+
+    // Product Messages
+    PRODUCT_CREATED: "Product created successfully",
+    PRODUCT_UPDATED: "Product updated successfully",
+    PRODUCT_DELETED: "Product deleted successfully",
+    PRODUCT_NOT_FOUND: "Product not found",
+    PRODUCT_FETCH_SUCCESS: "Products fetched successfully",
+
+    // Category Messages
+    CATEGORY_CREATED: "Category created successfully",
+    CATEGORY_UPDATED: "Category updated successfully",
+    CATEGORY_DELETED: "Category deleted successfully",
+    CATEGORY_NOT_FOUND: "Category not found",
+    CATEGORY_FETCH_SUCCESS: "Categories fetched successfully",
+
+    // Cart Messages
+    CART_ITEM_ADDED: "Product added to cart",
+    CART_ITEM_REMOVED: "Product removed from cart",
+    CART_UPDATED: "Cart updated successfully",
+    CART_FETCH_SUCCESS: "Cart fetched successfully",
+    CART_EMPTY: "Cart is empty",
+
+    // Wishlist Messages
+    WISHLIST_ITEM_ADDED: "Product added to wishlist",
+    WISHLIST_ITEM_REMOVED: "Product removed from wishlist",
+    WISHLIST_FETCH_SUCCESS: "Wishlist fetched successfully",
+
+    // Order Messages
+    ORDER_CREATED: "Order placed successfully",
+    ORDER_FETCH_SUCCESS: "Orders fetched successfully",
+    ORDER_NOT_FOUND: "Order not found",
+    ORDER_CANCELLED: "Order cancelled successfully",
+    ORDER_STATUS_UPDATED: "Order status updated successfully",
+
+    // Payment Messages
+    PAYMENT_SUCCESS: "Payment completed successfully",
+    PAYMENT_FAILED: "Payment failed",
+    PAYMENT_PENDING: "Payment pending",
+    PAYMENT_VERIFIED: "Payment verified successfully",
+
+    // Address Messages
+    ADDRESS_ADDED: "Address added successfully",
+    ADDRESS_UPDATED: "Address updated successfully",
+    ADDRESS_DELETED: "Address deleted successfully",
+    ADDRESS_FETCH_SUCCESS: "Address fetched successfully",
+
+    // Coupon Messages
+    COUPON_APPLIED: "Coupon applied successfully",
+    COUPON_INVALID: "Invalid coupon code",
+    COUPON_EXPIRED: "Coupon has expired",
+
+    // General Messages
+    DATA_FETCH_SUCCESS: "Data fetched successfully",
+    DATA_CREATED_SUCCESS: "Data created successfully",
+    DATA_UPDATED_SUCCESS: "Data updated successfully",
+    DATA_DELETED_SUCCESS: "Data deleted successfully",
+    DATA_NOT_FOUND: "No data found",
+    SERVER_ERROR: "Internal server error",
+    BAD_REQUEST: "Bad request",
+    VALIDATION_ERROR: "Validation failed"
+};
