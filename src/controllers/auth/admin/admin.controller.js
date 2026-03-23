@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 
 //Status code import
 const statusCode = require("http-status-codes");
+const { sendOTPMail, sendRegisterAdminMail } = require("../../../utils/mailer");
 
 
 //Yat aapn AdminAuthService he require kele tyamule services madhle sagle ikde use karu shakto
@@ -36,8 +37,11 @@ module.exports.registerAdmin = async(req, res)=>{
         const newAdmin = await adminServiceAuth.registerAdmin(req.body); //Yachya madhe adminServiceAuth ithun gheil and registerAdmin madhe takel req.body madhe
         if (!newAdmin) {
             console.log("Admin Not Added : "); 
-            return res.status(statusCode.BAD_REQUEST).json(errorResponse(statusCode.BAD_REQUEST, true, MSG.ADMIN_REGISTRATION_FAILED)); 
+            return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_REGISTRATION_FAILED)); 
         } 
+
+        await sendRegisterAdminMail(req.body.email, password);
+
         return res.status(statusCode.CREATED).json(successRes(statusCode.CREATED, false, MSG.ADMIN_REGISTRATION_SUCCESS, newAdmin)); //ithe aapn newAdmin pass kela tyamule aapn data fetch karu shakto postman madhe and console madhe
      } catch (err) {
         console.log("Error : ",err)
@@ -63,10 +67,10 @@ module.exports.loginAdmin = async(req, res) => {
 
      //JWT logic
      const payload = {
-      adminID : admin.id
+      adminId : admin.id
      }
 
-     const token = jwt.sign(payload, "Abhijit@1326");
+     const token = jwt.sign(payload, process.env.SECRET_KEY );
 
 
         return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_LOGIN_SUCCESS, {token})); //ithe aapn newAdmin pass kela tyamule aapn data fetch karu shakto postman madhe and console madhe
@@ -76,6 +80,33 @@ module.exports.loginAdmin = async(req, res) => {
 
 }
 
+//Forgot Password
+module.exports.forgotPassword = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email });
+
+    if (!admin) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+    }
+
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+
+    console.log("OTP : ", OTP);
+
+    sendOTPMail(req.body.email, OTP);
+
+    const expireOTPTime = new Date(Date.now() + 1000 * 60 * 2);
+
+    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.OTP_SENT_SUCCESS)
+    );
+
+  } catch (err) {
+    console.log("Error in forgot : ", err);
+  }
+};
+
 //fetch all admin
 module.exports.fetchAllAdmin = async(req, res)=>{
      try {
@@ -84,5 +115,20 @@ module.exports.fetchAllAdmin = async(req, res)=>{
        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , allAdmin)); 
      } catch (err) {
         console.log("Error in fetchAll : ",err)
+     }
+}
+
+//Fetch Single Admin
+module.exports.fetchSingleAdmin = async(req, res)=>{
+     try {
+        const { id } = req.params;
+const admin = await adminServiceAuth.fetchSingleAdmin({_id:id});
+         if (!admin) {
+        return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+         }
+
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , admin)); 
+     } catch (err) {
+        console.log("Error in single Admin : ",err)
      }
 }

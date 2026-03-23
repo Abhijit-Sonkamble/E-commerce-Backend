@@ -19,6 +19,14 @@ const adminSchema = mongoose.Schema ({
         type : String,
         required : true
     },
+    OTP : {
+        type : Number,
+        default : 0
+    },
+    OTP_Expire : {
+        type : Date,
+        default : null
+    },
     isActive : { // Admin active hai ki nhi dikhayega
         type: String,
         default: true

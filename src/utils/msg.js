@@ -91,5 +91,27 @@ module.exports.MSG = {
     DATA_NOT_FOUND: "No data found",
     SERVER_ERROR: "Internal server error",
     BAD_REQUEST: "Bad request",
-    VALIDATION_ERROR: "Validation failed"
+    VALIDATION_ERROR: "Validation failed",
+
+    // OTP Messages
+  OTP_SENT_SUCCESS: "OTP sent successfully",
+  OTP_SENT_FAILED: "OTP sent failed",
+  OTP_RESENT_SUCCESS: "OTP resent successfully",
+  OTP_VERIFIED_SUCCESS: "OTP verified successfully",
+
+  OTP_INVALID: "Invalid OTP",
+  OTP_EXPIRED: "OTP has expired",
+  OTP_NOT_FOUND: "OTP not found for this user",
+
+  EMAIL_NOT_FOUND: "Email does not exist",
+  TOO_MANY_ATTEMPTS: "Too many attempts, try again later",
+
+  // Password Reset
+  PASSWORD_RESET_SUCCESS: "Password reset successfully",
+  PASSWORD_RESET_FAILED: "Password reset failed",
+
+  // Common
+  SERVER_ERROR: "Internal server error",
+  BAD_REQUEST: "Bad request"
+
 };
