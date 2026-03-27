@@ -32,6 +32,8 @@ module.exports.MSG = {
     USER_UPDATE_SUCCESS: "User updated successfully",
     USER_PROFILE_FETCH_SUCCESS: "User profile fetched successfully",
     USER_PASSWORD_UPDATED: "User password updated successfully",
+    USER_REGISTRATION_FAILED: "User registration failed",
+    USER_REGISTRATION_SUCCESS: "Admin registration success",
 
     // Product Messages
     PRODUCT_CREATED: "Product created successfully",
@@ -94,7 +96,7 @@ module.exports.MSG = {
     VALIDATION_ERROR: "Validation failed",
 
     // OTP Messages
-  OTP_SENT_SUCCESS: "OTP sent successfully",
+  OTP_SENT_SUCCESS: "OTP sent successfully", 
   OTP_SENT_FAILED: "OTP sent failed",
   OTP_RESENT_SUCCESS: "OTP resent successfully",
   OTP_VERIFIED_SUCCESS: "OTP verified successfully",
@@ -104,11 +106,14 @@ module.exports.MSG = {
   OTP_NOT_FOUND: "OTP not found for this user",
 
   EMAIL_NOT_FOUND: "Email does not exist",
-  TOO_MANY_ATTEMPTS: "Too many attempts, try again later",
+  TOO_MANY_ATTEMPTS: "Try again 2 minutes later",
+  MANY_ATTEMPTS: "Verify to many attempts",
 
   // Password Reset
   PASSWORD_RESET_SUCCESS: "Password reset successfully",
   PASSWORD_RESET_FAILED: "Password reset failed",
+  PASSWORD_NOT_UPDATED: "Password not updated",
+  PASSWORD_UPDATED: "Password updated",
 
   // Common
   SERVER_ERROR: "Internal server error",

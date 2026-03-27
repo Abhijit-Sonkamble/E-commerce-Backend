@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const adminSchema = mongoose.Schema ({
+const userSchema = mongoose.Schema ({
 
     name: {
         type : String,
@@ -18,6 +18,18 @@ const adminSchema = mongoose.Schema ({
      password: {
         type : String,
         required : true
+    },
+     phone: {
+        type : String,
+        required : true
+    },
+     gender: {
+        type : String,
+        required : true
+    },
+     address : {
+        type : String,
+        default : ""
     },
     OTP : {
         type : Number,
@@ -43,23 +55,23 @@ const adminSchema = mongoose.Schema ({
         type : Date,
         default : null
     },
-    isActive : { // Admin active hai ki nhi dikhayega
+    isActive : { // User active hai ki nhi dikhayega
         type: String,
         default: true
     },
-    isDelete : { // Admin la soft delete karala ithe true false dakhvel
+    isDelete : { // User la soft delete karala ithe true false dakhvel
         type: String,
         default: false
     },
-    create_at : { // Admin kevha banla tyacha data milel
+    create_at : { // User kevha banla tyacha data milel
         type: String,
         required: true
     },
-    update_at : { // Admin chya data madhe kadhi changes zale
+    update_at : { // User chya data madhe kadhi changes zale
         type: String,
         required: true
     },
 
 });
 
-module.exports = mongoose.model("Admin", adminSchema, "Admin")
+module.exports = mongoose.model("User", userSchema, "User")

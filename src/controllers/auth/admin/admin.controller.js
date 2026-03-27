@@ -28,6 +28,8 @@ module.exports.registerAdmin = async(req, res)=>{
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_ALREADY_EXISTS));
         }
 
+        const password = req.body.password;
+
         //Password la bcrypt karte he req.body madhun password gheil and tyatun bcrypt karel
       req.body.password =   await bcrypt.hash(req.body.password, 12)
 
@@ -44,7 +46,7 @@ module.exports.registerAdmin = async(req, res)=>{
 
         return res.status(statusCode.CREATED).json(successRes(statusCode.CREATED, false, MSG.ADMIN_REGISTRATION_SUCCESS, newAdmin)); //ithe aapn newAdmin pass kela tyamule aapn data fetch karu shakto postman madhe and console madhe
      } catch (err) {
-        console.log("Error : ",err)
+        console.log("Error in register : ",err)
      }
 }
 
@@ -91,21 +93,108 @@ module.exports.forgotPassword = async (req, res) => {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
     }
 
+    // Kiti vela nantar expire over zali pahije
+    if (admin.attempt_Expire < Date.now()) {
+      admin.attempt = 0
+    }
+
+
+    //Otp attempt
+    if (admin.attempt >= 3) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.TOO_MANY_ATTEMPTS));
+    }
+
     const OTP = Math.floor(100000 + Math.random() * 900000);
 
     console.log("OTP : ", OTP);
 
-    sendOTPMail(req.body.email, OTP);
+    //For OTP and send msg
+   await sendOTPMail(req.body.email, OTP);
 
-    const expireOTPTime = new Date(Date.now() + 1000 * 60 * 2);
+    
+    admin.attempt++ ; //OTP attempt + hot jayla pahije
 
-    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.OTP_SENT_SUCCESS)
-    );
+    const OTP_Expire = new Date(Date.now() + 1000 * 60 * 2); // OTP expire cha logic aahe te last che num minute dakhvtat
+
+    await adminServiceAuth.updateAdmin(admin.id, {OTP, OTP_Expire, attempt: admin.attempt, attempt_Expire : new Date(Date.now() + 1000 * 60 * 2)}) //Yachya madhe kuthun data kuthe yeil te dakhvtay tr ithe (admin chya variable madun id yeil, {aani ithe aapn model and variable che name same thevle tyamule})
+
+
+
+    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.OTP_SENT_SUCCESS));
 
   } catch (err) {
     console.log("Error in forgot : ", err);
   }
 };
+
+//Verify OTP
+module.exports.verifyOTP = async (req, res) => {
+  try {
+   console.log(req.body);
+const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email });
+
+    if (!admin) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+    }
+
+    //Verify otp chi timing set karte
+        if (admin.verify_attempt_Expire < Date.now()) {
+            admin.verify_attempt = 0;
+        }
+
+   // Verify attempt limit
+    if (admin.verify_attempt >= 3) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.MANY_ATTEMPTS));
+    }
+    
+    //Check expire otp time
+    if (Date.now() > admin.OTP_Expire) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.OTP_EXPIRED))
+      
+    }
+
+    //Verify kele ki + zale pahije
+    admin.verify_attempt++ ;
+
+    //Verify che attempt update zale pahije aapn vadhvle tr tyamule he use kartat
+    await adminServiceAuth.updateAdmin(admin.id, {verify_attempt : admin.verify_attempt, verify_attempt_Expire : new Date(Date.now() + 1000 * 60 * 2) })
+
+    //Check otp
+    if(req.body.OTP !== admin.OTP){
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.OTP_INVALID))
+    }
+
+   //  Verify zalyavar OTP chi value 0 and Expire chi value null zali pahije tyamule ha logic
+    await adminServiceAuth.updateAdmin(admin.id, {OTP : 0, OTP_Expire : null , verify_attempt : admin.verify_attempt, verify_attempt_Expire : new Date(Date.now() + 1000 * 60) })
+
+
+
+    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.OTP_VERIFIED_SUCCESS))
+
+  } catch (err) {
+    console.log("Error in OTP : ", err);
+  }
+};
+
+
+//Forget new password
+module.exports.newPassword = async(req, res)=> {
+   console.log(req.body);
+
+   const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email});
+
+   req.body.newPassword =   await bcrypt.hash(req.body.newPassword, 12)
+
+ const updatedPassword =   await adminServiceAuth.updateAdmin(admin.id , {password : req.body.newPassword}); //Yachya madhe admin.id yeil ki kontya id chi aahe {and yat password yeil password madhun req.body.newPassword mhanje req.body madhun newPassword milel}
+
+ if (!updatedPassword) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.PASSWORD_NOT_UPDATED))
+ }
+
+    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.PASSWORD_UPDATED))
+
+
+}
 
 //fetch all admin
 module.exports.fetchAllAdmin = async(req, res)=>{

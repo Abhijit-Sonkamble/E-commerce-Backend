@@ -30,5 +30,14 @@ module.exports = class AdminAuthService {
         }
     }
 
+    //OTP
+    async updateAdmin(id, body){
+        try {
+            return await Admin.findByIdAndUpdate(id, body, {new : true}); //{new true mhanje ki updated data yeil and te return karto}
+        } catch (error) {
+            console.log("Admin Not Fetched....!");
+        }
+    }
+
 
 }
