@@ -10,7 +10,7 @@ adminRoute.post("/registerAdmin" , registerAdmin);
 adminRoute.post("/loginAdmin", loginAdmin);
 
 //Forgot Paaword
-adminRoute.post("/forgotPassword" , forgotPassword)
+adminRoute.post("/forgotPassword" , forgotPassword) 
 
 //Verify OTP
 adminRoute.post("/verifyOTP", verifyOTP)
