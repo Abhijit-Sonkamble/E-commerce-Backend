@@ -65,7 +65,8 @@ module.exports.loginUser = async(req, res) => {
 
      //JWT logic
      const payload = {
-      userId : user.id
+      id : user.id,
+      isAdmin : false // Yache meaning he aahe ki ha admin nahiye
      }
 
      const token = jwt.sign(payload, process.env.SECRET_KEY );
