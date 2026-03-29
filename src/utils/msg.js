@@ -18,10 +18,13 @@ module.exports.MSG = {
     ADMIN_CREATED_SUCCESS: "Admin created successfully",
     ADMIN_UPDATED_SUCCESS: "Admin updated successfully",
     ADMIN_DELETED_SUCCESS: "Admin deleted successfully",
+    ADMIN_DELETED_FAILED: "Admin deleted failed",
     ADMIN_NOT_FOUND: "Admin not found",
     ADMIN_ALREADY_EXISTS: "Admin already exists",
     ADMIN_ONLY_ACCESS: "Only admin can access this resource",
     ADMIN_FETCH_SUCCESS: "Admins fetched successfully",
+    ADMIN_UPDATE_SUCCESS: "Admins update successfully",
+    ADMIN_UPDATE_FAILED: "Admins update failed",
 
     // User Messages
     USER_CREATED_SUCCESS: "User created successfully",

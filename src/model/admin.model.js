@@ -44,7 +44,7 @@ const adminSchema = mongoose.Schema ({
         default : null
     },
     isActive : { // Admin active hai ki nhi dikhayega
-        type: String,
+        type: Boolean,
         default: true
     },
     isDelete : { // Admin la soft delete karala ithe true false dakhvel

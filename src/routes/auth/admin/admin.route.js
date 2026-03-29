@@ -1,6 +1,6 @@
 const express = require("express");
-const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword,  } = require("../../../controllers/auth/admin/admin.controller");
-const auth = require("../../../middleware/auth.middleware")
+const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin,  } = require("../../../controllers/auth/admin/admin.controller");
+
 const adminRoute = express.Router();
 
 //Register Admin
@@ -18,9 +18,19 @@ adminRoute.post("/verifyOTP", verifyOTP)
 //Forget new password
 adminRoute.post("/newPassword", newPassword)
 
+//All Admin Fetch
 adminRoute.get("/", fetchAllAdmin )
 
+//Delete Admin
+adminRoute.delete("/" , deleteAdmin)
 
-adminRoute.get("/:id" ,auth, fetchSingleAdmin) 
+//Fetch single andmin with params means id dyaychi route madhe
+adminRoute.get("/:id" , fetchSingleAdmin) 
+
+//Update admin with query
+adminRoute.patch("/", updateAdmin)
+
+//Active / Inactive
+adminRoute.put("/", activeOrInactiveAdmin)
 
 module.exports = adminRoute; 

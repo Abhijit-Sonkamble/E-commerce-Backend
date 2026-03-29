@@ -22,7 +22,7 @@ const adminServiceAuth = new AdminAuthService(); //yat new he keyword object ban
 module.exports.registerAdmin = async(req, res)=>{
      try {
 
-        const admin = await adminServiceAuth.fetchSingleAdmin({email : req.body.email});
+        const admin = await adminServiceAuth.fetchSingleAdmin({email : req.body.email, isDelete : false, isActive : true});
 
         if (admin) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_ALREADY_EXISTS));
@@ -54,7 +54,7 @@ module.exports.registerAdmin = async(req, res)=>{
 module.exports.loginAdmin = async(req, res) => {
 
    try {
-      const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email});
+      const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true});
 
       if (!admin) {
         return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -88,7 +88,7 @@ module.exports.forgotPassword = async (req, res) => {
   try {
     console.log(req.body);
 
-    const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email });
+    const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true });
 
     if (!admin) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -132,7 +132,7 @@ module.exports.forgotPassword = async (req, res) => {
 module.exports.verifyOTP = async (req, res) => {
   try {
    console.log(req.body);
-const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email });
+   const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true });
 
     if (!admin) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -182,7 +182,7 @@ const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email })
 module.exports.newPassword = async(req, res)=> {
    console.log(req.body);
 
-   const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email});
+   const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true});
 
    req.body.newPassword =   await bcrypt.hash(req.body.newPassword, 12)
 
@@ -200,7 +200,11 @@ module.exports.newPassword = async(req, res)=> {
 //fetch all admin
 module.exports.fetchAllAdmin = async(req, res)=>{
      try {
-      const allAdmin = await adminServiceAuth.fetchAllAdmin();
+      const allAdmin = await adminServiceAuth.fetchAllAdmin({isDelete : false});
+
+      if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
 
        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , allAdmin)); 
      } catch (err) {
@@ -212,7 +216,7 @@ module.exports.fetchAllAdmin = async(req, res)=>{
 module.exports.fetchSingleAdmin = async(req, res)=>{
      try {
         const { id } = req.params;
-const admin = await adminServiceAuth.fetchSingleAdmin({_id:id});
+        const admin = await adminServiceAuth.fetchSingleAdmin({_id:id, isDelete : false, isActive : true});
          if (!admin) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
          }
@@ -220,5 +224,95 @@ const admin = await adminServiceAuth.fetchSingleAdmin({_id:id});
        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , admin)); 
      } catch (err) {
         console.log("Error in single Admin : ",err)
+     }
+}
+
+//Delete Admin
+module.exports.deleteAdmin = async(req, res) => {
+ try {
+
+   const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false, isActive : true });
+
+    if (!admin) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+    }
+  
+
+  /* Aaaplyala delete karayche and tyamule aapn params use karto safety mule tr aapn ithe req.query.id use marto means
+  aapn req deto query madhe and tyat aapn id name chi key use karto te aaplyala delete la true false karun dete */
+      const deleteAdmin = await adminServiceAuth.updateAdmin(req.query.id , {isDelete : true, isActive: false}); 
+
+      if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+      if (!deleteAdmin) {
+        return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_DELETED_FAILED));
+        
+      }
+
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_DELETED_SUCCESS)); 
+     } catch (err) {
+        console.log("Error in Delete : ",err)
+     }
+}
+
+
+//Update Admin
+module.exports.updateAdmin = async(req, res) => {
+ try {
+
+  if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+   const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false, isActive : true }, true);
+
+    if (!admin) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+    }
+  
+    req.body.update_at = moment().format('DD/MM/YYYY, h:mm:ss A');
+
+ //Ithe pn aapn query la priority deto safety mule
+      const updateAdmin = await adminServiceAuth.updateAdmin(req.query.id , req.body); 
+
+      
+      if (!updateAdmin) {
+        return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_UPDATE_FAILED));
+        
+      }
+
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_UPDATE_SUCCESS, updateAdmin)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
+     } catch (err) {
+        console.log("Error in Update : ",err)
+     }
+}
+
+
+//Actuve or inActive
+module.exports.activeOrInactiveAdmin = async(req, res) => {
+ try {
+
+  if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+   const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false }, true);
+
+    if (!admin) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
+    }
+  
+    console.log("Before:", admin.isActive);
+
+
+ //Ithe pn aapn query la priority deto safety mule
+      const updateAdmin = await adminServiceAuth.updateAdmin(req.query.id , {isActive: !admin.isActive, update_at: moment().format('DD/MM/YYYY, h:mm:ss A')}); //True aahe tr False and False aahe tr true kara sathi admin madhun inActive ghetle ! and he change kara sathi use kartat
+console.log("After:", updateAdmin?.isActive);
+
+return res.status(statusCode.OK).json(successRes(statusCode.OK, false, `${admin.name} ${admin.last_name} is ${updateAdmin.isActive ? 'active' : 'inactive'}`)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
+
+     } catch (err) {
+        console.log("Error in Active or Inactive : ",err)
      }
 }
