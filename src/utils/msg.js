@@ -25,6 +25,7 @@ module.exports.MSG = {
     ADMIN_FETCH_SUCCESS: "Admins fetched successfully",
     ADMIN_UPDATE_SUCCESS: "Admins update successfully",
     ADMIN_UPDATE_FAILED: "Admins update failed",
+    ADMIN_PROFILE_FETCH_SUCCESS: "Admins profile fetched successfully",
 
     // User Messages
     USER_CREATED_SUCCESS: "User created successfully",
@@ -32,7 +33,9 @@ module.exports.MSG = {
     USER_ALREADY_EXISTS: "User already exists",
     USER_FETCH_SUCCESS: "Users fetched successfully",
     USER_DELETE_SUCCESS: "User deleted successfully",
+    USER_DELETE_FAILED: "User deleted failed",
     USER_UPDATE_SUCCESS: "User updated successfully",
+    USER_UPDATE_FAILED: "User updated failed",
     USER_PROFILE_FETCH_SUCCESS: "User profile fetched successfully",
     USER_PASSWORD_UPDATED: "User password updated successfully",
     USER_REGISTRATION_FAILED: "User registration failed",

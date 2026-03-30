@@ -30,12 +30,12 @@ module.exports = async (req, res, next) => {
 
     if (decoded.isAdmin) {
 
-    data =  await adminServiceAuth.fetchSingleAdmin({_id: decoded.id, isDelete : false, isActive : true}) // Yamadhe isDelete and isActive yamule takle ki tashi condition asali tevha ch token pass hoyla pahije
+    data =  await adminServiceAuth.fetchSingleAdmin({_id: decoded.id, isDelete : false, isActive : true}, true) // Yamadhe isDelete and isActive yamule takle ki tashi condition asali tevha ch token pass hoyla pahije
     req.admin = data; //Purn admin cha data ha store zala data yat
 
     } else {
 
-    data =  await userServiceAuth.fetchSingleUser({_id: decoded.id, isDelete : false, isActive : true})
+    data =  await userServiceAuth.fetchSingleUser({_id: decoded.id, isDelete : false, isActive : true}, true)
     req.user = data; //Purn user cha data ha store zala data yat
 
     }

@@ -56,11 +56,11 @@ const userSchema = mongoose.Schema ({
         default : null
     },
     isActive : { // User active hai ki nhi dikhayega
-        type: String,
+        type: Boolean,
         default: true
     },
     isDelete : { // User la soft delete karala ithe true false dakhvel
-        type: String,
+        type: Boolean,
         default: false
     },
     create_at : { // User kevha banla tyacha data milel

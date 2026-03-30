@@ -48,7 +48,7 @@ const adminSchema = mongoose.Schema ({
         default: true
     },
     isDelete : { // Admin la soft delete karala ithe true false dakhvel
-        type: String,
+        type: Boolean,
         default: false
     },
     create_at : { // Admin kevha banla tyacha data milel

@@ -13,4 +13,7 @@ route.use(authMiddleware);
 //Admin cha route fetch hoyla pahije mhanun auth chi condition nahi jayla pahije mhanun ekda ch
 route.use("/admin", require("./auth/admin/admin.route"))
 
+//User cha route fetch hoyla pahije mhanun auth chi condition nahi jayla pahije mhanun ekda ch
+route.use("/user", require("./auth/user/user.route"))
+
 module.exports = route;

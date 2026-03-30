@@ -13,9 +13,14 @@ module.exports = class UserAuthService {
     }
 
     //Fetch admin karala
-    async fetchSingleUser(body){
+    async fetchSingleUser(body, isSelect){
         try {
-            return await User.findOne(body)
+            //Yache meaning ase aahe ki aaplyala jithe purn data nasel hava tithe aapn true karun deu isSelect jr hava asel tr false
+            if (isSelect) {
+                 return await User.findOne(body).select('_id name last_name email phone gender address isActive create_at update_at')
+            } else {
+                 return await User.findOne(body)
+            }
         } catch (error) {
             console.log("User Not Fetched....!");
         }
@@ -24,7 +29,7 @@ module.exports = class UserAuthService {
     //Fetch All Admin
     async fetchAllUser(){
         try {
-            return await User.find()
+            return await User.find({isDelete : false}).select('_id name last_name email phone gender address isActive create_at update_at')
         } catch (error) {
             console.log("User Not Fetched....!");
         }
@@ -33,7 +38,7 @@ module.exports = class UserAuthService {
     //OTP
     async updateUser(id, body){
         try {
-            return await User.findByIdAndUpdate(id, body, {new : true}); //{new true mhanje ki updated data yeil and te return karto}
+            return await User.findByIdAndUpdate(id, body, {new : true}).select('_id name last_name email phone gender address isActive create_at update_at'); //{new true mhanje ki updated data yeil and te return karto}
         } catch (error) {
             console.log("User Not Fetched....!");
         }

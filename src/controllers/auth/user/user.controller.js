@@ -22,7 +22,7 @@ const userServiceAuth = new UserAuthService(); //yat new he keyword object banva
 module.exports.registerUser = async(req, res)=>{
      try {
 
-        const user = await userServiceAuth.fetchSingleUser({email : req.body.email});
+        const user = await userServiceAuth.fetchSingleUser({email : req.body.email, isDelete : false, isActive : true}, true);
 
         if (user) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.USER_ALREADY_EXISTS));
@@ -50,7 +50,7 @@ module.exports.registerUser = async(req, res)=>{
 module.exports.loginUser = async(req, res) => {
 
    try {
-      const user = await userServiceAuth.fetchSingleUser({email: req.body.email});
+      const user = await userServiceAuth.fetchSingleUser({email: req.body.email, isDelete : false, isActive : true}, false);
 
       if (!user) {
         return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
@@ -84,7 +84,7 @@ module.exports.forgotPassword = async (req, res) => {
   try {
     console.log(req.body);
 
-    const user = await userServiceAuth.fetchSingleUser({ email: req.body.email });
+    const user = await userServiceAuth.fetchSingleUser({ email: req.body.email , isDelete : false, isActive : true}, false);
 
     if (!user) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
@@ -128,7 +128,7 @@ module.exports.forgotPassword = async (req, res) => {
 module.exports.verifyOTP = async (req, res) => {
   try {
    console.log(req.body);
-const user = await userServiceAuth.fetchSingleUser({ email: req.body.email });
+const user = await userServiceAuth.fetchSingleUser({ email: req.body.email , isDelete : false, isActive : true}, false);
 
     if (!user) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
@@ -178,7 +178,7 @@ const user = await userServiceAuth.fetchSingleUser({ email: req.body.email });
 module.exports.newPassword = async(req, res)=> {
    console.log(req.body);
 
-   const user = await userServiceAuth.fetchSingleUser({email: req.body.email});
+   const user = await userServiceAuth.fetchSingleUser({email: req.body.email, isDelete : false, isActive : true}, true);
 
    req.body.newPassword =   await bcrypt.hash(req.body.newPassword, 12) // Update kelyavr hash zala pahije
 
@@ -193,28 +193,121 @@ module.exports.newPassword = async(req, res)=> {
 
 }
 
-// //fetch all admin
-// module.exports.fetchAllAdmin = async(req, res)=>{
-//      try {
-//       const allAdmin = await userServiceAuth.fetchAllAdmin();
+//fetch all User
+module.exports.fetchAllUser = async(req, res)=>{
+     try {
+      const allUser = await userServiceAuth.fetchAllUser();
 
-//        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , allAdmin)); 
-//      } catch (err) {
-//         console.log("Error in fetchAll : ",err)
-//      }
-// }
+      if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
 
-// //Fetch Single Admin
-// module.exports.fetchSingleAdmin = async(req, res)=>{
-//      try {
-//         const { id } = req.params;
-// const admin = await userServiceAuth.fetchSingleAdmin({_id:id});
-//          if (!admin) {
-//         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
-//          }
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.USER_FETCH_SUCCESS , allUser)); 
+     } catch (err) {
+        console.log("Error in Fetch All user : ",err)
+     }
+}
 
-//        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_FETCH_SUCCESS , admin)); 
-//      } catch (err) {
-//         console.log("Error in single Admin : ",err)
-//      }
-// }
+//User Delete
+module.exports.deleteUser = async(req, res) => {
+ try {
+
+    console.log("Delete User Api hit")
+   const user = await userServiceAuth.fetchSingleUser({_id: req.query.id, isDelete : false, isActive : true }, true);
+
+    if (!user) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
+    }
+  
+
+      const deleteUser = await userServiceAuth.updateUser(req.query.id , {isDelete : true, isActive: false});  // Ithe isDelete true and active false ahe means je ae asale te delete nahi karu shakt
+
+      if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+      if (!deleteUser) {
+        return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.USER_DELETE_FAILED));
+        
+      }
+
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.USER_DELETE_SUCCESS)); 
+     } catch (err) {
+        console.log("Error in Delete : ",err)
+     }
+}
+
+
+//Update User
+module.exports.updateUser = async(req, res) => {
+ try {
+
+  if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+      
+      const user = await userServiceAuth.fetchSingleUser({_id: req.query.id, isDelete : false, isActive : true }, true);
+      console.log(req.query.id)
+
+      console.log(user)
+
+    if (!user) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
+    }
+  
+    req.body.update_at = moment().format('DD/MM/YYYY, h:mm:ss A');
+
+ //Ithe pn aapn query la priority deto safety mule
+      const updateUser = await userServiceAuth.updateUser(req.query.id , req.body); 
+
+      
+      if (!updateUser) {
+        return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.USER_UPDATE_FAILED));
+        
+      }
+
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_UPDATE_SUCCESS, updateUser)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
+     } catch (err) {
+        console.log("Error in Update user : ",err)
+     }
+}
+
+//Active or inActive
+module.exports.activeOrInactiveUser = async(req, res) => {
+ try {
+
+  if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+   const user = await userServiceAuth.fetchSingleUser({_id: req.query.id, isDelete : false }, true);
+
+    if (!user) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.USER_NOT_FOUND));
+    }
+  
+
+
+ //Ithe pn aapn query la priority deto safety mule
+    const updateUser = await userServiceAuth.updateUser(req.query.id , {isActive: !user.isActive, update_at: moment().format('DD/MM/YYYY, h:mm:ss A')}); //True aahe tr False and False aahe tr true kara sathi admin madhun inActive ghetle ! and he change kara sathi use kartat
+
+return res.status(statusCode.OK).json(successRes(statusCode.OK, false, `${user.name} ${user.last_name} is ${updateUser.isActive ? 'active' : 'inactive'}`)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
+
+     } catch (err) {
+        console.log("Error in Active or Inactive : ",err)
+     }
+}
+
+
+//User Profile
+module.exports.userProfile = async(req, res) => {
+ try {
+      if (!req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.USER_PROFILE_FETCH_SUCCESS, req.user)); //Ithe req.admin yachya mule diley bcoz tyatun data yeil aani aapn he middleware madhe declare keley
+
+     } catch (err) {
+        console.log("Error in User Profile : ",err)
+     }
+}

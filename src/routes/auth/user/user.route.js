@@ -3,7 +3,7 @@ const express = require("express");
 const userRoute = express.Router();
 
 // const auth = require("../../../middleware/auth.middleware");
-const { registerUser, loginUser, forgotPassword, verifyOTP, newPassword } = require("../../../controllers/auth/user/user.controller");
+const { registerUser, loginUser, forgotPassword, verifyOTP, newPassword, fetchAllUser, deleteUser, updateUser, activeOrInactiveUser, userProfile } = require("../../../controllers/auth/user/user.controller");
 
 //Register User
 userRoute.post("/registerUser" , registerUser);
@@ -19,6 +19,22 @@ userRoute.post("/verifyOTP", verifyOTP)
 
 // //Forget new password
 userRoute.post("/newPassword", newPassword)
+
+//REST API
+
+//Fetch All User
+userRoute.get("/", fetchAllUser)
+
+//Delete User
+userRoute.delete("/" , deleteUser)
+
+//Update User
+userRoute.patch("/", updateUser)
+
+//Active or Inactive
+userRoute.put("/", activeOrInactiveUser)
+
+userRoute.get("/userProfile", userProfile)
 
 
 module.exports = userRoute;

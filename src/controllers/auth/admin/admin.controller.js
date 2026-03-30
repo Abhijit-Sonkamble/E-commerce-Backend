@@ -22,7 +22,7 @@ const adminServiceAuth = new AdminAuthService(); //yat new he keyword object ban
 module.exports.registerAdmin = async(req, res)=>{
      try {
 
-        const admin = await adminServiceAuth.fetchSingleAdmin({email : req.body.email, isDelete : false, isActive : true});
+        const admin = await adminServiceAuth.fetchSingleAdmin({email : req.body.email, isDelete : false, isActive : true}, true);
 
         if (admin) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_ALREADY_EXISTS));
@@ -54,7 +54,7 @@ module.exports.registerAdmin = async(req, res)=>{
 module.exports.loginAdmin = async(req, res) => {
 
    try {
-      const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true});
+      const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true}, false);
 
       if (!admin) {
         return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -88,7 +88,7 @@ module.exports.forgotPassword = async (req, res) => {
   try {
     console.log(req.body);
 
-    const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true });
+    const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true }, false);
 
     if (!admin) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -132,7 +132,7 @@ module.exports.forgotPassword = async (req, res) => {
 module.exports.verifyOTP = async (req, res) => {
   try {
    console.log(req.body);
-   const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true });
+   const admin = await adminServiceAuth.fetchSingleAdmin({ email: req.body.email, isDelete : false, isActive : true }, false);
 
     if (!admin) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -182,7 +182,7 @@ module.exports.verifyOTP = async (req, res) => {
 module.exports.newPassword = async(req, res)=> {
    console.log(req.body);
 
-   const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true});
+   const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true}, true);
 
    req.body.newPassword =   await bcrypt.hash(req.body.newPassword, 12)
 
@@ -216,7 +216,7 @@ module.exports.fetchAllAdmin = async(req, res)=>{
 module.exports.fetchSingleAdmin = async(req, res)=>{
      try {
         const { id } = req.params;
-        const admin = await adminServiceAuth.fetchSingleAdmin({_id:id, isDelete : false, isActive : true});
+        const admin = await adminServiceAuth.fetchSingleAdmin({_id:id, isDelete : false, isActive : true}, true);
          if (!admin) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
          }
@@ -231,7 +231,7 @@ module.exports.fetchSingleAdmin = async(req, res)=>{
 module.exports.deleteAdmin = async(req, res) => {
  try {
 
-   const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false, isActive : true });
+   const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false, isActive : true }, true);
 
     if (!admin) {
              return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_NOT_FOUND));
@@ -284,12 +284,12 @@ module.exports.updateAdmin = async(req, res) => {
 
        return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_UPDATE_SUCCESS, updateAdmin)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
      } catch (err) {
-        console.log("Error in Update : ",err)
+        console.log("Error in Update admin : ",err)
      }
 }
 
 
-//Actuve or inActive
+//Active or inActive
 module.exports.activeOrInactiveAdmin = async(req, res) => {
  try {
 
@@ -314,5 +314,21 @@ return res.status(statusCode.OK).json(successRes(statusCode.OK, false, `${admin.
 
      } catch (err) {
         console.log("Error in Active or Inactive : ",err)
+     }
+}
+
+
+//Admin Profile
+module.exports.profileAdmin = async(req, res) => {
+ try {
+  if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+      
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_PROFILE_FETCH_SUCCESS, req.admin)); //Ithe req.admin yachya mule diley bcoz tyatun data yeil aani aapn he middleware madhe declare keley
+
+     } catch (err) {
+        console.log("Error in Profile : ",err)
      }
 }

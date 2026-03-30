@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin,  } = require("../../../controllers/auth/admin/admin.controller");
+const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin, profileAdmin,  } = require("../../../controllers/auth/admin/admin.controller");
 
 const adminRoute = express.Router();
 
@@ -24,6 +24,10 @@ adminRoute.get("/", fetchAllAdmin )
 //Delete Admin
 adminRoute.delete("/" , deleteAdmin)
 
+
+//Admin chi profile disli pahije current konta aahe tr
+adminRoute.get("/profile", profileAdmin)
+
 //Fetch single andmin with params means id dyaychi route madhe
 adminRoute.get("/:id" , fetchSingleAdmin) 
 
@@ -32,5 +36,6 @@ adminRoute.patch("/", updateAdmin)
 
 //Active / Inactive
 adminRoute.put("/", activeOrInactiveAdmin)
+
 
 module.exports = adminRoute; 
