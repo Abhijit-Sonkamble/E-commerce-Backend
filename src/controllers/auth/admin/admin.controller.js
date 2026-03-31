@@ -180,6 +180,9 @@ module.exports.verifyOTP = async (req, res) => {
 
 //Forget new password
 module.exports.newPassword = async(req, res)=> {
+
+  try {
+    
    console.log(req.body);
 
    const admin = await adminServiceAuth.fetchSingleAdmin({email: req.body.email, isDelete : false, isActive : true}, true);
@@ -193,7 +196,9 @@ module.exports.newPassword = async(req, res)=> {
  }
 
     return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.PASSWORD_UPDATED))
-
+  } catch (error) {
+    console.log("Error in new password ", error)
+  }
 
 }
 
@@ -331,4 +336,40 @@ module.exports.profileAdmin = async(req, res) => {
      } catch (err) {
         console.log("Error in Profile : ",err)
      }
+}
+
+
+//Change Password
+module.exports.change_password = async(req, res)=> {
+
+
+  try {
+     if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+  }
+
+  const admin = await adminServiceAuth.fetchSingleAdmin({_id : req.admin.id, isDelete: false, isActive: true}, false)
+
+  const isPassword = await bcrypt.compare(req.body.currentPassword, admin.password) // He password la match karun baghte jase ki aapn postman madhe deto ki current password and admin madhun aalela password match aahe ka asala tr true nasala tr false
+
+
+  if (!isPassword) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.INVALID_PASSWORD))
+ }
+
+  req.body.newPassword =   await bcrypt.hash(req.body.newPassword, 12); //New password la hash karte
+
+   const updatedPassword =   await adminServiceAuth.updateAdmin(admin.id , {password : req.body.newPassword}); //Yachya madhe admin.id yeil ki kontya id chi aahe {and yat password yeil password madhun req.body.newPassword mhanje req.body madhun newPassword milel}
+
+ if (!updatedPassword) {
+      return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.PASSWORD_NOT_UPDATED))
+ }
+
+    return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.PASSWORD_UPDATED))
+
+    
+  } catch (error) {
+    console.log("Error in changePassword : ", error)
+  }
+
 }

@@ -1,5 +1,6 @@
 const express = require("express");
-const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin, profileAdmin,  } = require("../../../controllers/auth/admin/admin.controller");
+const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin, profileAdmin, change_password,  } = require("../../../controllers/auth/admin/admin.controller");
+// const authMiddleware = require("../../../middleware/auth.middleware");
 
 const adminRoute = express.Router();
 
@@ -17,6 +18,8 @@ adminRoute.post("/verifyOTP", verifyOTP)
 
 //Forget new password
 adminRoute.post("/newPassword", newPassword)
+
+
 
 //All Admin Fetch
 adminRoute.get("/", fetchAllAdmin )
@@ -36,6 +39,11 @@ adminRoute.patch("/", updateAdmin)
 
 //Active / Inactive
 adminRoute.put("/", activeOrInactiveAdmin)
+
+//change-password
+adminRoute.post("/change-password", change_password)
+
+
 
 
 module.exports = adminRoute; 

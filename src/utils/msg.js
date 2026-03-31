@@ -5,6 +5,7 @@ module.exports.MSG = {
     USER_LOGIN_SUCCESS: "User login successful",
     USER_LOGOUT_SUCCESS: "User logout successful",
     INVALID_CREDENTIALS: "Invalid email or password",
+    INVALID_PASSWORD: "Invalid password",
     TOKEN_REQUIRED: "Authentication token required",
     TOKEN_INVALID: "Invalid or expired token",
     UNAUTHORIZED: "Unauthorized access",

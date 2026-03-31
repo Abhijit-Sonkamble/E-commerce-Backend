@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken");
 //Status code import
 const statusCode = require("http-status-codes");
 const { sendOTPMail } = require("../../../utils/mailer");
+const AdminAuthService = require("../../../services/auth/admin/admin.service");
 
 
 //Yat aapn UserAuthService he require kele tyamule services madhle sagle ikde use karu shakto
@@ -310,4 +311,38 @@ module.exports.userProfile = async(req, res) => {
      } catch (err) {
         console.log("Error in User Profile : ",err)
      }
+}
+
+
+//Change Password
+module.exports.change_password = async(req, res) => {
+
+    try {
+            if (!req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
+      const user = await userServiceAuth.fetchSingleUser({_id: req.user.id, isDelete: false, isActive: true}, false);
+
+      const isPassword = await bcrypt.compare(req.body.currentPassword, user.password);
+
+        if (!isPassword) {
+            return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.INVALID_PASSWORD))
+       }
+       //Password Hashing
+       req.body.newPassword = await bcrypt.hash(req.body.newPassword, 12)
+
+       const updatedPassword =   await userServiceAuth.updateUser(user.id , {password : req.body.newPassword}); //Yachya madhe admin.id yeil ki kontya id chi aahe {and yat password yeil password madhun req.body.newPassword mhanje req.body madhun newPassword milel}
+       
+        if (!updatedPassword) {
+             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.PASSWORD_NOT_UPDATED))
+        }
+       
+           return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.PASSWORD_UPDATED))
+    } catch (error) {
+        console.log("Error in change Password user", error)
+    }
+
+
+
 }
