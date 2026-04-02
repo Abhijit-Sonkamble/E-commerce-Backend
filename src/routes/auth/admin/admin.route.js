@@ -1,11 +1,18 @@
 const express = require("express");
 const { registerAdmin, loginAdmin, fetchAllAdmin, fetchSingleAdmin, forgotPassword, verifyOTP, newPassword, deleteAdmin, updateAdmin, activeOrInactiveAdmin, profileAdmin, change_password,  } = require("../../../controllers/auth/admin/admin.controller");
-// const authMiddleware = require("../../../middleware/auth.middleware");
+
+//File and images sathi cloudinary
+const multer = require("multer")
+
+const {storage} = require("../../../middleware/storage.middleware")
+
 
 const adminRoute = express.Router();
 
+const upload = multer({storage}); // Aapn ya madhe upload variable madhe multer ne storage save kele te object aahe mhanun {ya madhe takle}
+
 //Register Admin
-adminRoute.post("/registerAdmin" , registerAdmin);
+adminRoute.post("/registerAdmin", upload.single("profile_image") ,registerAdmin); // Profile image hi key aahe
 
 //Login Admin
 adminRoute.post("/loginAdmin", loginAdmin);

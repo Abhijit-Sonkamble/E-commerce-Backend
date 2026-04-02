@@ -51,6 +51,7 @@ module.exports.MSG = {
 
     // Category Messages
     CATEGORY_CREATED: "Category created successfully",
+    CATEGORY_CREATED_FAILED: "Category created successfully",
     CATEGORY_UPDATED: "Category updated successfully",
     CATEGORY_DELETED: "Category deleted successfully",
     CATEGORY_NOT_FOUND: "Category not found",

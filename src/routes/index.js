@@ -17,6 +17,6 @@ route.use("/admin", require("./auth/admin/admin.route"))
 route.use("/user", require("./auth/user/user.route"))
 
 //Category
-route.use("/category", require("./auth/category/category.route"))
+route.use("/category", require("./category/category.route"))
 
 module.exports = route;

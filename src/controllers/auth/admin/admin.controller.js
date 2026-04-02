@@ -22,6 +22,9 @@ const adminServiceAuth = new AdminAuthService(); //yat new he keyword object ban
 module.exports.registerAdmin = async(req, res)=>{
      try {
 
+      console.log("Controller is running...");
+      
+  
         const admin = await adminServiceAuth.fetchSingleAdmin({email : req.body.email, isDelete : false, isActive : true}, true);
 
         if (admin) {
@@ -35,8 +38,15 @@ module.exports.registerAdmin = async(req, res)=>{
 
         req.body.create_at = moment().format('DD/MM/YYYY, h:mm:ss a');
         req.body.update_at = moment().format('DD/MM/YYYY, h:mm:ss a');
+        
+        
+
+        // Ya madhe ase aahe ki req milel tyacha body madhun profile_image chya key madhun aapn to data req.file.path madhe save karel aani ithe req mile part file and tyatun path milel image kina veglya file cha
+        req.body.profile_image = req.file.path ;
 
         const newAdmin = await adminServiceAuth.registerAdmin(req.body); //Yachya madhe adminServiceAuth ithun gheil and registerAdmin madhe takel req.body madhe
+
+        
         if (!newAdmin) {
             console.log("Admin Not Added : "); 
             return res.status(statusCode.BAD_REQUEST).json(errorRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_REGISTRATION_FAILED)); 
@@ -236,6 +246,10 @@ module.exports.fetchSingleAdmin = async(req, res)=>{
 module.exports.deleteAdmin = async(req, res) => {
  try {
 
+    if (req.user) {
+        return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
+      }
+
    const admin = await adminServiceAuth.fetchSingleAdmin({_id: req.query.id, isDelete : false, isActive : true }, true);
 
     if (!admin) {
@@ -281,7 +295,6 @@ module.exports.updateAdmin = async(req, res) => {
  //Ithe pn aapn query la priority deto safety mule
       const updateAdmin = await adminServiceAuth.updateAdmin(req.query.id , req.body); 
 
-      
       if (!updateAdmin) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.ADMIN_UPDATE_FAILED));
         

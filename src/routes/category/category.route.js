@@ -1,5 +1,5 @@
 const express = require("express");
-const { addCategory } = require("../../../controllers/auth/category/category.controller");
+const { addCategory } = require("../../controllers/category/category.controller");
 
 const categoryRoute = express.Router()
 

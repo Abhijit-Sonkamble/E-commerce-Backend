@@ -288,7 +288,6 @@ module.exports.activeOrInactiveUser = async(req, res) => {
     }
   
 
-
  //Ithe pn aapn query la priority deto safety mule
     const updateUser = await userServiceAuth.updateUser(req.query.id , {isActive: !user.isActive, update_at: moment().format('DD/MM/YYYY, h:mm:ss A')}); //True aahe tr False and False aahe tr true kara sathi admin madhun inActive ghetle ! and he change kara sathi use kartat
 

@@ -15,6 +15,10 @@ const adminSchema = mongoose.Schema ({
         required : true,
         unique : true // unique personality dete agar same asale tr error kinva notifacation deil
     },
+    profile_image: {
+       type : String,
+       required : true
+   },
      password: {
         type : String,
         required : true
