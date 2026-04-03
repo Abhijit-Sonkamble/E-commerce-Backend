@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const categorySchema = mongoose.Schema({
 
     category_name : String,
-    category_image : String,
+     category_image: {
+       type : String,
+       required : true
+   },
     isActive : {
         type: String,
         default : true

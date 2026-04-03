@@ -54,7 +54,9 @@ module.exports.MSG = {
     CATEGORY_CREATED_FAILED: "Category created successfully",
     CATEGORY_UPDATED: "Category updated successfully",
     CATEGORY_DELETED: "Category deleted successfully",
+    CATEGORY_DELETED_FAILED: "Category deleted failed",
     CATEGORY_NOT_FOUND: "Category not found",
+    CATEGORY_UPDATE_FAILED: "Category UPDATE Failed",
     CATEGORY_FETCH_SUCCESS: "Categories fetched successfully",
 
     // Cart Messages

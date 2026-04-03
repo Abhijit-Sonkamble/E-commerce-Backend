@@ -1,6 +1,8 @@
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
+const multer = require("multer")
+
 
 cloudinary.config({
     //cloud_name, api_key, api_secret he fix aahe key yana aapn change nahi karu shakt
@@ -19,4 +21,7 @@ const storage = new CloudinaryStorage({
     }
 })
 
-module.exports ={ storage } //Yala dusri kade pn use karala aapn exports kele {ya madhe yache mule ki te object aahe}
+const upload = multer({storage}); // Upload variable madhe aapn varche storage variable save kele and object aahe tr {yamdhe thevle} and ha aapn jar variable che name dusre thevle tr storage : variable name ase thevayche
+
+
+module.exports ={ upload } //Yala dusri kade pn use karala aapn exports kele {ya madhe yache mule ki te object aahe}

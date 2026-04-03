@@ -35,6 +35,9 @@ module.exports.registerUser = async(req, res)=>{
         req.body.create_at = moment().format('DD/MM/YYYY, h:mm:ss a');
         req.body.update_at = moment().format('DD/MM/YYYY, h:mm:ss a');
 
+        //Image multer
+         req.body.profile_image = req.file.path ;
+
         const newUser = await userServiceAuth.registerUser(req.body); //Yachya madhe userServiceAuth ithun gheil and registerAdmin madhe takel req.body madhe
         if (!newUser) {
             console.log("Admin Not Added : "); 
@@ -213,7 +216,6 @@ module.exports.fetchAllUser = async(req, res)=>{
 module.exports.deleteUser = async(req, res) => {
  try {
 
-    console.log("Delete User Api hit")
    const user = await userServiceAuth.fetchSingleUser({_id: req.query.id, isDelete : false, isActive : true }, true);
 
     if (!user) {
@@ -226,6 +228,7 @@ module.exports.deleteUser = async(req, res) => {
       if (req.user) {
         return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
       }
+      
       if (!deleteUser) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.USER_DELETE_FAILED));
         
@@ -267,7 +270,7 @@ module.exports.updateUser = async(req, res) => {
         
       }
 
-       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.ADMIN_UPDATE_SUCCESS, updateUser)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
+       return res.status(statusCode.OK).json(successRes(statusCode.OK, false, MSG.USER_UPDATE_SUCCESS, updateUser)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
      } catch (err) {
         console.log("Error in Update user : ",err)
      }

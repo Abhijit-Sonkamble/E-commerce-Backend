@@ -1,12 +1,14 @@
 const express = require("express");
 
+
+
 const userRoute = express.Router();
 
-// const auth = require("../../../middleware/auth.middleware");
 const { registerUser, loginUser, forgotPassword, verifyOTP, newPassword, fetchAllUser, deleteUser, updateUser, activeOrInactiveUser, userProfile, change_password } = require("../../../controllers/auth/user/user.controller");
+const { upload } = require("../../../middleware/storage.middleware");
 
 //Register User
-userRoute.post("/registerUser" , registerUser);
+userRoute.post("/registerUser" ,upload.single("profile_image"), registerUser);
 
 // //Login User
 userRoute.post("/loginUser", loginUser);
