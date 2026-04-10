@@ -228,7 +228,7 @@ module.exports.deleteUser = async(req, res) => {
       if (req.user) {
         return res.status(statusCode.UNAUTHORIZED).json(successRes(statusCode.UNAUTHORIZED, true, MSG.UNAUTHORIZED));
       }
-      
+
       if (!deleteUser) {
         return res.status(statusCode.BAD_REQUEST).json(successRes(statusCode.BAD_REQUEST, true, MSG.USER_DELETE_FAILED));
         
@@ -292,7 +292,7 @@ module.exports.activeOrInactiveUser = async(req, res) => {
   
 
  //Ithe pn aapn query la priority deto safety mule
-    const updateUser = await userServiceAuth.updateUser(req.query.id , {isActive: !user.isActive, update_at: moment().format('DD/MM/YYYY, h:mm:ss A')}); //True aahe tr False and False aahe tr true kara sathi admin madhun inActive ghetle ! and he change kara sathi use kartat
+    const updateUser = await userServiceAuth.updateUser(req.query.id, {isActive: !user.isActive, update_at: moment().format('DD/MM/YYYY, h:mm:ss A')}); //True aahe tr False and False aahe tr true kara sathi admin madhun inActive ghetle ! and he change kara sathi use kartat
 
 return res.status(statusCode.OK).json(successRes(statusCode.OK, false, `${user.name} ${user.last_name} is ${updateUser.isActive ? 'active' : 'inactive'}`)); // Yachya madhe last la result nasaate dakhvt pn aaplyala kalal pahije mhanun taklay
 

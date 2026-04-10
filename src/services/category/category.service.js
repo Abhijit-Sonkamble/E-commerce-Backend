@@ -16,11 +16,14 @@ module.exports = class CategoryService {
        //Fetch single category
         async fetchSingleCategory(body){
             try {
+                /*Jar aapn ekhadya madhe body pass kart asel jase varti keley (body) ase tr tyat aapn object and filter pass nahi karu shakt khali 
+                aapn jase diley tase karu shakto and aapn controller madhe pn pass karu shakto jase aapn kele*/
+                // body.isActive = true;
+                // body.isDelete = false;
+                return await category.findOne(body);
                 
-                return await category.findOne(body, {isDelete : false, isActive: true})
             } catch (error) {
                 console.log("User Not Fetched....!");
-                return res.status(statusCode.INTERNAL_SERVER_ERROR).json(errorRes(statusCode.INTERNAL_SERVER_ERROR, true, MSG.SERVER_ERROR));
                 
             }
         }
